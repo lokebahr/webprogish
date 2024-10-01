@@ -1,23 +1,23 @@
 import React from 'react';
+import { useParams, useOutletContext } from 'react-router-dom';
 
-function ViewOrder({ shoppingCart, removeSaladFromCart }) {
+function ViewOrder() {
+  const { cart, removeSaladFromCart } = useOutletContext();
+  const { uuid } = useParams();  // Get the UUID from the URL
+
   return (
     <div className="view-order">
       <h3>Din beställning</h3>
-      {shoppingCart.length > 0 ? (
+
+      {/* If UUID is present, show confirmation message */}
+      {uuid && <p>Beställningen för sallad {uuid} har lagts till.</p>}
+
+      {cart.length > 0 ? (
         <ul>
-          {shoppingCart.map(salad => (
+          {cart.map(salad => (
             <li key={salad.uuid}>
               <p>Sallad ID: {salad.uuid}</p>
               <p>Pris: {salad.getPrice()} SEK</p>
-              <p>Ingredienser:</p>
-              <ul>
-                {Object.entries(salad.ingredients).map(([name, ingredient]) => (
-                  <li key={name}>
-                    {name}: {ingredient.name} - {ingredient.price} SEK
-                  </li>
-                ))}
-              </ul>
               <button onClick={() => removeSaladFromCart(salad.uuid)}>Ta bort</button>
             </li>
           ))}
